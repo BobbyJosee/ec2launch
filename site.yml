@@ -1,0 +1,29 @@
+---
+- name: Create a new Demo EC2 instance
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+      region: ap-south-1
+      instance_type: t2.nano
+      ami: ami-f4cc1de2  # Ubuntu 16.04 LTS
+      keypair: testkey # pem file name
+  
+  tasks:
+
+    - name: Create an ec2 instance
+      ec2:
+         key_name: "{{ keypair }}"
+         group: einsteinish  # security group name
+         instance_type: "{{ instance_type}}"
+         image: "{{ ami }}"
+         wait: true
+         region: "{{ region }}"
+         count: 1  # default
+         count_tag:1
+            Name: Demo
+         instance_tags:
+            Name: Demo
+         vpc_subnet_id: subnet-cef59af4
+         assign_public_ip: yes
+      register: ec2
